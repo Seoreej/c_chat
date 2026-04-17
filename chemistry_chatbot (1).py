@@ -45,7 +45,16 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapi
 
 # ⚠️ 스프레드시트 이름을 본인이 만든 시트 이름으로 변경하세요
 SPREADSHEET_NAME = "화학탐구챗봇로그"
+st.set_page_config(page_title="🧪 화학 탐구 챗봇", layout="centered")
 
+# 상단 메뉴, 푸터 숨기기
+st.markdown("""
+    <style>
+        #MainMenu {visibility: hidden;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+    </style>
+""", unsafe_allow_html=True)
 @st.cache_resource
 def get_sheet():
     """Google Sheets 연결 (인증부터 시트 열기까지 한번에)"""
