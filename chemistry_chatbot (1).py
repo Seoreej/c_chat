@@ -189,6 +189,8 @@ if page == "💬 채팅":
             answer,
         )
         with st.chat_message("assistant"):
+            with st.spinner("🤔 답변을 생성하고 있습니다..."):
+                answer = get_response(prompt)
             st.markdown(answer)
 
 # ============================================================
