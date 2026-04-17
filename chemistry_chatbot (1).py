@@ -15,6 +15,8 @@ import time
 import csv
 import io
 import json
+import tempfile
+import os
 
 # ============================================================
 # 0. 설정 (⚠️ 반드시 본인 것으로 변경하세요!)
@@ -41,9 +43,13 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 service_account_info = json.loads(st.secrets["GCP_SERVICE_ACCOUNT_JSON"])
 service_account_info["private_key"] = service_account_info["private_key"].replace("\\n", "\n")
-creds = Credentials.from_service_account_info(
-    service_account_info, scopes=SCOPES
-)
+with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+    json.dump(service_account_info, f)
+    temp_path = f.name
+
+creds = Credentials.from_service_account_file(temp_path, scopes=SCOPES)
+os.remove(temp_path)
+
 gc = gspread.authorize(creds)
 
 # ⚠️ 스프레드시트 이름을 본인이 만든 시트 이름으로 변경하세요
