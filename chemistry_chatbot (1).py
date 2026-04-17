@@ -17,6 +17,7 @@ import io
 import json
 import tempfile
 import os
+from zoneinfo import ZoneInfo
 
 # ============================================================
 # 0. 설정 (⚠️ 반드시 본인 것으로 변경하세요!)
@@ -79,7 +80,7 @@ def save_to_sheet(session_id, user_name, role, content):
         return
 
     try:
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        now = datetime.datetime.now(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
         sheet.append_row([now, session_id, user_name, role, content])
     except Exception as e:
         st.warning(f"시트 저장 중 오류: {e}")
