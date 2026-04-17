@@ -40,7 +40,7 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 
 # Streamlit Secrets에서 서비스 계정 정보 불러오기 (배포용, 권장)
 # secrets.toml의 [gcp_service_account] 섹션에 JSON 키 내용을 넣으세요
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
 service_account_info = json.loads(st.secrets["GCP_SERVICE_ACCOUNT_JSON"])
 service_account_info["private_key"] = service_account_info["private_key"].replace("\\n", "\n")
 with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
