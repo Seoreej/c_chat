@@ -58,12 +58,13 @@ SPREADSHEET_NAME = "화학탐구챗봇로그"
 
 @st.cache_resource
 def get_sheet():
-    """Google Sheets 연결 (캐싱으로 반복 연결 방지)"""
+    """Google Sheets 연결"""
     try:
-        spreadsheet = gc.open(SPREADSHEET_NAME)
+        _creds = Credentials.from_service_account_file(temp_path, scopes=SCOPES)
+        _gc = gspread.authorize(_creds)
+        spreadsheet = _gc.open(SPREADSHEET_NAME)
         sheet = spreadsheet.sheet1
 
-        # 헤더가 없으면 추가
         if sheet.row_count == 0 or not sheet.row_values(1):
             sheet.append_row(["시간", "세션ID", "이름", "역할", "내용"])
 
