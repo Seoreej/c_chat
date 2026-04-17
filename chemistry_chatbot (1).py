@@ -41,27 +41,25 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 # Streamlit Secrets에서 서비스 계정 정보 불러오기 (배포용, 권장)
 # secrets.toml의 [gcp_service_account] 섹션에 JSON 키 내용을 넣으세요
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-service_account_info = json.loads(st.secrets["GCP_SERVICE_ACCOUNT_JSON"])
-service_account_info["private_key"] = service_account_info["private_key"].replace("\\n", "\n")
-with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
-    json.dump(service_account_info, f)
-    temp_path = f.name
-
-creds = Credentials.from_service_account_file(temp_path, scopes=SCOPES)
-os.remove(temp_path)
-
-gc = gspread.authorize(creds)
 
 # ⚠️ 스프레드시트 이름을 본인이 만든 시트 이름으로 변경하세요
 SPREADSHEET_NAME = "화학탐구챗봇로그"
 
-
 @st.cache_resource
 def get_sheet():
-    """Google Sheets 연결"""
+    """Google Sheets 연결 (인증부터 시트 열기까지 한번에)"""
     try:
-        _creds = Credentials.from_service_account_file(temp_path, scopes=SCOPES)
-        _gc = gspread.authorize(_creds)
+        info = json.loads(st.secrets["GCP_SERVICE_ACCOUNT_JSON"])
+        info["private_key"] = info["private_key"].replace("\\n", "\n")
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            json.dump(info, f)
+            temp_path = f.name
+
+        creds = Credentials.from_service_account_file(temp_path, scopes=SCOPES)
+        os.remove(temp_path)  # 인증 완료 후 삭제
+
+        _gc = gspread.authorize(creds)
         spreadsheet = _gc.open(SPREADSHEET_NAME)
         sheet = spreadsheet.sheet1
 
